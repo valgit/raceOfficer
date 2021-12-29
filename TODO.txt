@@ -1,0 +1,30 @@
+TODO:
+
+* gestion role race officers VRI ?
+* role # par race ?
+* sauvegarde/restauration
+* id membre plutot que pseudo ?
+* creation des salons, gestion des roles et permission
+* work on the IC publication
+* download list ?
+
+---------------------
+#needed :
+# create : create salon for register / role
+#register : add role for salon
+# online : with check
+# list with oline column
+# notify : notif of offline
+# status
+# start : notif for online
+# reclaim : clenanup all
+# results : post sailrank result ?
+
+Create : dans le salon, créé une entrée skipper avec le nom, créé un salon code.
+Effacer le message
+
+Registre : ajouté à la table du salon
+Online : ajouté le rôle
+Reclaim : enlève les rôles, nettoyage table, vide le salon effacer le message
+
+

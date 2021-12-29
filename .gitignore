@@ -1,0 +1,9 @@
+# Environments
+.env
+.venv
+.ro2venv
+
+regata.json
+__pycache__
+*.orig
+
