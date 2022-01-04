@@ -1,3 +1,8 @@
+import sys
+
+# adding Folder_2 to the system path
+sys.path.insert(0, '/Users/val/Documents/sailing/raceOfficer2/pycord')
+
 import os
 import discord
 from dotenv import load_dotenv
@@ -33,6 +38,7 @@ async def on_ready():
     for cog in cogs: # Looks for the cogs,
         client.load_extension(cog) # Loads the cogs.
     return
+
 
 client.run(token)
 

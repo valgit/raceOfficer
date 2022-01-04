@@ -48,9 +48,13 @@ def write_data(file,data):
 
 def read_data(file):
     """for reading the file"""
-    with open(file) as f:
-        data = json.load(f)
-    return data
+    try:
+        with open(file, 'r') as f:
+            data = json.load(f)
+        return data
+    except FileNotFoundError:
+        return None
+
 
     
 class raceOfficer(commands.Cog):
