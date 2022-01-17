@@ -109,6 +109,10 @@ class raceOfficer(commands.Cog):
             inline=False)
         return embed
 
+    def getRaceKay(self, ctx, name):
+        """ define key for race"""
+        key=ctx.guild.name+"_"+name
+        return key
 
     def makeKey(self,ctx):
         """ define the key for the race
@@ -138,7 +142,7 @@ class raceOfficer(commands.Cog):
         try:
             # look for race channel
 
-            key=ctx.guild.name+"_"+name
+            key = self.getRaceKay(ctx, name)
             #key = self.makeKey(ctx)
             #print("key will be : {key}".format(key=key))
 
@@ -208,12 +212,14 @@ class raceOfficer(commands.Cog):
         #await message.delete()
         return
 
+  
+
     #
     # list all current regatta
-    # check for : Race officers VRI (ESF) ?
+    # check for : Race officer VRI VRI (ESF) ?
     #
     @commands.command(name="listrace", help="list all regatta" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     #@commands.has_role('raceofficer')
     async def listrace(self,ctx):
         logging.info("listing ")
@@ -235,6 +241,7 @@ class raceOfficer(commands.Cog):
     # 
     # register <srid> <boatd name>
     # register a boat to current regatta
+    # need to be in goot channel 
     @commands.command(name="register", pass_context=True, help="register for this regatta <sailrank><boat name>")
     async def register(self,ctx, sr: int, boatid: str):
             member = ctx.author
@@ -289,6 +296,7 @@ class raceOfficer(commands.Cog):
 
     # 
     # cancel registration
+    # race channel
     #
     @commands.command(name="unregister", help="cancel/remove for this regatta")
     async def unregister(self,ctx):
@@ -318,13 +326,15 @@ class raceOfficer(commands.Cog):
     #  list sailor for regatta
     #
     @commands.command(name="list", help="list registerd esailors" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def list(self,ctx,name: str):
         """
         list registered esailors
         name: race name
+        in ro channel
         """
-        key=ctx.guild.name+"_"+name
+        #key=ctx.guild.name+"_"+name
+        key = self.getRaceKay(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -358,6 +368,7 @@ class raceOfficer(commands.Cog):
     #
     # annonce 'online' pour la regatte
     # give acces to code
+    # race channel
     #
     @commands.command(name="online", help="enable esailors" , aliases=['connecte','yes'])
     async def online(self,ctx):
@@ -392,12 +403,14 @@ class raceOfficer(commands.Cog):
     # close the resgistration process
     #
     @commands.command(name="close", help="close registration" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def close(self,ctx,name: str):
         """
         close the registration for the race
+        RO channel
         """
-        key=ctx.guild.name+"_"+name
+        #key=ctx.guild.name+"_"+name
+        key = self.getRaceKay(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -424,7 +437,7 @@ class raceOfficer(commands.Cog):
     # mention list user which have not send online
     #
     @commands.command(name="notify", help="mention offline users" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def notify(self,ctx):
         key = self.makeKey(ctx)
         race = self.regatta.get(key)
@@ -449,12 +462,14 @@ class raceOfficer(commands.Cog):
 
     #
     # cancel/delete a regatta
+    # RO channel
     #
     @commands.command(name="remove", help="cancel/delete regatta" )
     #@commands.has_role('raceofficer')
     async def remove(self,ctx, name:str):
         logging.info("canceling " + name)
-        key=ctx.guild.name+"_"+name
+        #key=ctx.guild.name+"_"+name
+        key = self.getRaceKay(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -504,14 +519,16 @@ class raceOfficer(commands.Cog):
     # display some regatta info
     #
     @commands.command(name="status", help="list esailors online" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def status(self,ctx, name: str):
         """
         list esailor
         param:
         name: race name
+        RO channel
         """
-        key = ctx.guild.name + "-" + name
+        #key = ctx.guild.name + "-" + name
+        key = self.getRaceKay(ctx, name)
         # key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -552,11 +569,12 @@ class raceOfficer(commands.Cog):
     # print list of sailrank for apply
     #
     @commands.command(name="srlist", help="get sailrank list of esailors online" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def srlist(self,ctx,name: str):
         """display sailrank of online people
         """
-        key = ctx.guild.name + "-" + name
+        #key = ctx.guild.name + "-" + name
+        key = self.getRaceKay(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -597,13 +615,14 @@ class raceOfficer(commands.Cog):
     # need to account for RO/SR
     #
     @commands.command(name="division", help="create pool for online users, set num repeat and Race Officer(s)" )
-    @commands.has_role('race officers')
+    @commands.has_role('race officer VRI')
     async def division(self,ctx,name: str,num:int, *args):
         """display pool division of online people
         num : number of loop
-        args : race officers
+        args : race officer VRI
         """
-        key = ctx.guild.name + "-" + name
+        #key = ctx.guild.name + "-" + name
+        key = self.getRaceKay(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -619,7 +638,7 @@ class raceOfficer(commands.Cog):
                 await ctx.send("**WARNING** not enough Race Officer(s) defined !")
             
             if len(args) > 0 :
-                await ctx.send('{} Race Officers : {}'.format(len(args), ', '.join(args)))
+                await ctx.send('{} Race officer VRI : {}'.format(len(args), ', '.join(args)))
 
             onlineList = buildList(participants)
             #should remove them from list
@@ -652,7 +671,7 @@ class raceOfficer(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self,ctx, error):
         if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send('You do not have the correct role (race officers) for this command.')
+            await ctx.send('You do not have the correct role (race officer VRI) for this command.')
         else:
             await ctx.send('general error ' + str(error))
 

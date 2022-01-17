@@ -1,7 +1,7 @@
 import sys
   
 # adding Folder_2 to the system path
-sys.path.insert(0, '/Users/val/Documents/sailing/raceOfficer2/pycord')
+#sys.path.insert(0, '/Users/val/Documents/sailing/raceOfficer2/pycord')
   
 
 import discord
