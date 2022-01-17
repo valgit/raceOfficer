@@ -129,6 +129,7 @@ class raceOfficer(commands.Cog):
         #await ctx.send('pong')
         await ctx.send('⛵ I am your race officer helper bot ⛵')
         await ctx.send("discord.py v{}".format(discord.__version__))
+        await ctx.send('role particpant will be :' + self.skip_role)
         
 
     # 
