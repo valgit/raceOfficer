@@ -109,7 +109,7 @@ class raceOfficer(commands.Cog):
             inline=False)
         return embed
 
-    def getRaceKay(self, ctx, name):
+    def getRaceKey(self, ctx, name):
         """ define key for race"""
         key=ctx.guild.name+"_"+name
         return key
@@ -143,7 +143,7 @@ class raceOfficer(commands.Cog):
         try:
             # look for race channel
 
-            key = self.getRaceKay(ctx, name)
+            key = self.getRaceKey(ctx, name)
             #key = self.makeKey(ctx)
             #print("key will be : {key}".format(key=key))
 
@@ -159,8 +159,13 @@ class raceOfficer(commands.Cog):
             self.regatta[key]=race
 
             # create code channel
+            #get orig categorie
+            regatta = "race-" + name
+            raceChan = self.findChannel(ctx,regatta)
+            logging.info('regata is in "'+raceChan.category.name+'"')
             mChan = "codes-" + name
-            annChannel = await ctx.guild.create_text_channel(mChan, category=ctx.channel.category, topic="code régate {}".format(name))
+            #annChannel = await ctx.guild.create_text_channel(mChan, category=ctx.channel.category, topic="code régate {}".format(name))
+            annChannel = await ctx.guild.create_text_channel(mChan, category=raceChan.category, topic="code régate {}".format(name))
 
             # create a RO channelfor announcement
             #print('ch : {}'.format(ctx.channel))
@@ -179,6 +184,7 @@ class raceOfficer(commands.Cog):
             #await annChannel.send(tmpl)
             # add a mention ?
             annChannel = self.findChannel(ctx,mChan)
+            logging.info('annouce channel is :'+annChannel.name)
             # end
 
             try:
@@ -335,7 +341,7 @@ class raceOfficer(commands.Cog):
         in ro channel
         """
         #key=ctx.guild.name+"_"+name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -411,7 +417,7 @@ class raceOfficer(commands.Cog):
         RO channel
         """
         #key=ctx.guild.name+"_"+name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -470,7 +476,7 @@ class raceOfficer(commands.Cog):
     async def remove(self,ctx, name:str):
         logging.info("canceling " + name)
         #key=ctx.guild.name+"_"+name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -529,7 +535,7 @@ class raceOfficer(commands.Cog):
         RO channel
         """
         #key = ctx.guild.name + "-" + name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         # key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -575,7 +581,7 @@ class raceOfficer(commands.Cog):
         """display sailrank of online people
         """
         #key = ctx.guild.name + "-" + name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
@@ -623,7 +629,7 @@ class raceOfficer(commands.Cog):
         args : race officer VRI
         """
         #key = ctx.guild.name + "-" + name
-        key = self.getRaceKay(ctx, name)
+        key = self.getRaceKey(ctx, name)
         #key = self.makeKey(ctx)
         race = self.regatta.get(key)
         if not race:
