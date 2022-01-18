@@ -188,7 +188,7 @@ class raceOfficer(commands.Cog):
             #await annChannel.send(tmpl)
             # add a mention ?
             annChannel = self.findChannel(ctx,mChan)
-            logging.info('annouce channel is :'+annChannel.name)
+            logging.info('announce channel is :'+annChannel.name)
             # end
 
             try:
@@ -229,8 +229,9 @@ class raceOfficer(commands.Cog):
     # list all current regatta
     # check for : Race officer VRI VRI (ESF) ?
     #
-    @commands.command(name="listrace", help="list all regatta" )
-    @commands.has_role('race officer VRI')
+    @commands.command(name="listraces", help="list all servers regatta" )
+    #@commands.has_role('race officer VRI')
+    @commands.is_owner()
     #@commands.has_role('raceofficer')
     async def listrace(self,ctx):
         logging.info("listing ")
@@ -299,17 +300,17 @@ class raceOfficer(commands.Cog):
                     await info.edit(embed=embed)
                     write_data(self.database,self.regatta)
 
-                    await ctx.send('ok! ' + user['name'] + ' will register your boat : ' + user['boat'])
+                    await ctx.send('👍 ' + user['name'] + ' will register your boat : ' + user['boat'])
                 else:
-                    await ctx.send('nok : registration are close for this race')
+                    await ctx.send('🚫 : registration are close for this race')
          
 
 
     # 
-    # cancel registration
+    # unregister registration
     # race channel
     #
-    @commands.command(name="unregister", help="cancel/remove for this regatta")
+    @commands.command(name="unregister", help="unregister for this regatta")
     async def unregister(self,ctx):
         member = ctx.author
         #key=ctx.guild.name+"_"+ctx.channel.name
@@ -445,6 +446,40 @@ class raceOfficer(commands.Cog):
             return
 
     #
+    # open the resgistration process
+    #
+    @commands.command(name="open", help="(re)open registration" )
+    @commands.has_role('race officer VRI')
+    async def open(self,ctx,name: str):
+        """
+        (re)open the registration for the race
+        RO channel
+        """
+        #key=ctx.guild.name+"_"+name
+        key = self.getRaceKey(ctx, name)
+        #key = self.makeKey(ctx)
+        race = self.regatta.get(key)
+        if not race:
+            await ctx.send('no race define')
+            return
+        else:
+            race['status'] = True
+            participants = race['skipper']
+
+            logging.info('opening regatta {}'.format(race['name']))
+
+            nb = len(participants)
+            # TODO : embed
+            msg= 'registered users are : {nb} '.format(nb=nb)
+            await ctx.send(msg)
+            await ctx.send("registration are open")
+            ## get the message
+            message = ctx.message
+            ## delete the message
+            await message.delete()
+            return
+
+    #
     # mention list user which have not send online
     #
     @commands.command(name="notify", help="mention offline users" )
@@ -469,7 +504,7 @@ class raceOfficer(commands.Cog):
             else:
                 if msg:
                     await ctx.send(msg)
-                await ctx.send("are you online ?")
+                await ctx.send("are you online ? use : $online")
                 return
 
     #
