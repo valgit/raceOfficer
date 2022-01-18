@@ -78,12 +78,16 @@ class raceOfficer(commands.Cog):
     def findChannel(self,ctx,name):
         """ find a channel by name
         """
-        for channel in ctx.guild.text_channels:
+        logging.info('findChannel : {}'.format(name))
+        try:
+            for channel in ctx.guild.text_channels:
                 if name in channel.name.lower():
-            #       logging.info('current channel : {}'.format(channel))
+                #       logging.info('current channel : {}'.format(channel))
                     mChan = channel
                     break
-        return mChan
+            return mChan
+        except:
+            return None
 
     def readIC(self,race):
         """ TODO: read the IC template
@@ -92,11 +96,11 @@ class raceOfficer(commands.Cog):
             contents = f.read()
         f.close()
         # apply template ?
-        #temp = Template(contents)
-        #return temp.substitute(racename=race['name'],
-        #    date=race['date'],time=race['time'],
-        #    code="codes-" + race['name'])
-        return contents
+        temp = Template(contents)
+        return temp.substitute(racename=race['name'],
+            date=race['date'],time=race['time'],
+            code="codes-" + race['name'])
+        #return contents
 
     def buildEmbed(self,race):
         embed = discord.Embed(title='⛵ new {} regatta'.format(race['name']), 
@@ -445,8 +449,9 @@ class raceOfficer(commands.Cog):
     #
     @commands.command(name="notify", help="mention offline users" )
     @commands.has_role('race officer VRI')
-    async def notify(self,ctx):
-        key = self.makeKey(ctx)
+    async def notify(self,ctx, name:str):
+        #key = self.makeKey(ctx)
+        key = self.getRaceKey(ctx, name)
         race = self.regatta.get(key)
         if not race:
             await ctx.send('no race define')
