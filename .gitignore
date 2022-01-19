@@ -2,6 +2,7 @@
 .env
 .venv
 .ro2venv
+.roenv
 
 regata.json
 __pycache__
