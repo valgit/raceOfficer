@@ -334,49 +334,7 @@ class raceOfficer(commands.Cog):
         else:
             await ctx.send(ctx.author.display_name +" you are not registered")
 
-    #
-    #  list sailor for regatta
-    #
-    @commands.command(name="list", help="list registerd esailors" )
-    @commands.has_role('race officer VRI')
-    async def list(self,ctx,name: str):
-        """
-        list registered esailors
-        name: race name
-        in ro channel
-        """
-        #key=ctx.guild.name+"_"+name
-        key = self.getRaceKey(ctx, name)
-        #key = self.makeKey(ctx)
-        race = self.regatta.get(key)
-        if not race:
-            await ctx.send('no race define')
-            return
-        else:
-            participants = race['skipper']
-
-            msg = 'race **{name}**'.format(name=race['name'])
-            await ctx.send(msg)
-            if race['status'] == True:
-                await ctx.send('registration are open')
-            else:
-                await ctx.send('registration are closed')
-            nb = len(participants)
-            msg= 'registered users are : {nb} '.format(nb=nb)
-            #print(msg)
-            await ctx.send(msg)
-            await ctx.send('partipant,sailrank,bateau,online')
-            msg = ''
-            for u in participants:
-                tmpmsg='**{user}** ,{rank} ,{boat}, {on}  \n'.format(user=participants[u]['name'],
-                    rank=participants[u]['sr'],boat=participants[u]['boat'],on=participants[u]['online'])
-                #print(msg)
-                msg = msg + tmpmsg
-
-            if msg:
-                await ctx.send(msg) 
-        return
-
+  
     #
     # annonce 'online' pour la regatte
     # give acces to code
@@ -492,6 +450,9 @@ class raceOfficer(commands.Cog):
             await ctx.send('no race define')
             return
         else:
+            regatta = "race-" + name
+            raceChan = self.findChannel(ctx,regatta)
+
             participants = race['skipper']
             logging.info("notifying registered user of 'online' missing")
             msg = ''
@@ -503,9 +464,10 @@ class raceOfficer(commands.Cog):
                     msg = msg + tmpmsg
             else:
                 if msg:
-                    await ctx.send(msg)
-                await ctx.send("are you online ? use : $online")
-                return
+                    await raceChan.send(msg)
+                    await raceChan.send("are you online ? use : $online")
+                    return
+        return
 
     #
     # cancel/delete a regatta
@@ -594,23 +556,23 @@ class raceOfficer(commands.Cog):
             nb = 0
             for u in participants:
                 if participants[u]['online'] == True:
-                    tmpmsg='**{user}** ,{rank} ,{boat}\n'.format(user=participants[u]['name'],
-                        rank=participants[u]['sr'],boat=participants[u]['boat'])
+                    #tmpmsg='**{user}** ,{rank} ,{boat}\n'.format(user=participants[u]['name'],
+                    #    rank=participants[u]['sr'],boat=participants[u]['boat'])
                     #print(msg)
-                    msg = msg + tmpmsg
+                    #msg = msg + tmpmsg
                     #print(participants[u]['name'])
                     nb = nb + 1
             else:
                 await ctx.send('total online user {nb}'.format(nb=nb))
                 
-            try:
+            #try:
                 #print(msg)
-                if msg:
-                    await ctx.send('partipant,sailrank,bateau')
-                    await ctx.send(msg)
+            #    if msg:
+            #        await ctx.send('partipant,sailrank,bateau')
+            #        await ctx.send(msg)
 
-            except Exception as e:
-                    await ctx.send('There was an error running this command ' + str(e)) #if error 
+            #except Exception as e:
+            #        await ctx.send('There was an error running this command ' + str(e)) #if error 
 
     #
     # print list of sailrank for apply
@@ -656,6 +618,50 @@ class raceOfficer(commands.Cog):
             except Exception as e:
                     await ctx.send('There was an error running this command ' + str(e)) #if error 
 
+    
+    
+    #
+    #  list sailor for regatta
+    #
+    @commands.command(name="list", help="list registerd esailors" )
+    @commands.has_role('race officer VRI')
+    async def list(self,ctx,name: str):
+        """
+        list registered esailors
+        name: race name
+        in ro channel
+        """
+        #key=ctx.guild.name+"_"+name
+        key = self.getRaceKey(ctx, name)
+        #key = self.makeKey(ctx)
+        race = self.regatta.get(key)
+        if not race:
+            await ctx.send('no race define')
+            return
+        else:
+            participants = race['skipper']
+
+            msg = 'race **{name}**'.format(name=race['name'])
+            await ctx.send(msg)
+            if race['status'] == True:
+                await ctx.send('registration are open')
+            else:
+                await ctx.send('registration are closed')
+            nb = len(participants)
+            msg= 'registered users are : {nb} '.format(nb=nb)
+            #print(msg)
+            await ctx.send(msg)
+            await ctx.send('partipant,sailrank,bateau,online')
+            msg = ''
+            for u in participants:
+                tmpmsg='**{user}** ,{rank} ,{boat}, {on}  \n'.format(user=participants[u]['name'],
+                    rank=participants[u]['sr'],boat=participants[u]['boat'],on=participants[u]['online'])
+                #print(msg)
+                msg = msg + tmpmsg
+
+            if msg:
+                await ctx.send(msg) 
+        return
 
     #
     # print pool of user for apply
