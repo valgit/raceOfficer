@@ -80,9 +80,12 @@ class tools(commands.Cog):
 		"""
 		boatlist = ["Formule 18", "Laser", "Star", "49er", "Nacra 17", "J/70", "F50", "Offshore Racer", "AC75"," FareEast28"]
 		
-		random_boat = random.choices(boatlist, k=num)
-		await ctx.send('boats are : {}'.format(random_boat))
-		await ctx.send('selection done')
+		if (num>10):
+			await ctx.send('too many boats requiered')
+		else:
+			random_boat = random.choices(boatlist, k=num,False)
+			await ctx.send('boats are : {}'.format(random_boat))
+			await ctx.send('selection done')
 
 def setup(bot):
 	bot.add_cog(tools(bot))
