@@ -5,6 +5,7 @@
 .roenv
 
 regata.json
+CNH_settings.json
 __pycache__
 *.orig
 pycord

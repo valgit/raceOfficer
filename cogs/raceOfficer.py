@@ -44,6 +44,8 @@ def write_data(file,data):
     #serdata = safe_serialize(data)
     #with open(file,'w') as f:
     #        f.write(serdata)
+    #with open(file,'w', encoding='utf-8') as f:
+    #    json.dump(data, f, ensure_ascii=False, indent=4)
     logging.info('write disable')
 
 def read_data(file):
@@ -127,20 +129,22 @@ class raceOfficer(commands.Cog):
         key=ctx.guild.name+"_"+name
         return key
 
-    #just test
-    @commands.command(name="officer", help="server alive and info")
-    async def officer(self,ctx):
-        #await ctx.send('pong')
-        await ctx.send('⛵ I am your race officer helper bot ⛵')
-        await ctx.send("discord.py v{}".format(discord.__version__))
-        await ctx.send('role particpant will be :' + self.skip_role)
-        
-
     # 
     # create regatta at date time
     # stored in dict
-    @commands.command(name="create", pass_context=True, help="register for this regatta")
+    @commands.command(name="create", pass_context=True)
+    #help="register for this regatta")
     async def create(self,ctx, name: str, date: str, time: str):
+        """create a regatta <name> <date> <time>
+        Parameters
+        ------------
+        name: str [Required]
+            the regatta name
+        date: str [Required]
+            the date (dd/mm/yyyy) for the venue
+        time: str [Required]
+            the UTC time (HH:MM) for the venue
+        """
         await ctx.send("registering new regatta "+ name)
         # need to create channel
         logging.info("register regatta "+ name + " at " + date)
@@ -254,55 +258,65 @@ class raceOfficer(commands.Cog):
     # register <srid> <boatd name>
     # register a boat to current regatta
     # need to be in goot channel 
-    @commands.command(name="register", pass_context=True, help="register for this regatta <sailrank><boat name>")
+    @commands.command(name="register", pass_context=True)
+    #help="register for this regatta <sailrank><boat name>")
     async def register(self,ctx, sr: int, boatid: str):
-            member = ctx.author
+        """
+        register for the current regatta
+        Parameters
+        ------------
+        sr: int [Required]
+            sailrank number
+        boatname: str [Required]
+            the particpant boatname
+        """
+        member = ctx.author
 
-            logging.info('registering {}'.format(member))
-            #key=ctx.guild.name+"_"+ctx.channel.name
-            key = self.makeKey(ctx)
+        logging.info('registering {}'.format(member))
+        #key=ctx.guild.name+"_"+ctx.channel.name
+        key = self.makeKey(ctx)
             
-            race = self.regatta.get(key)
-            if not race:
-                await ctx.send('no race define')
-                return
-            else:
-                participants = race['skipper']
+        race = self.regatta.get(key)
+        if not race:
+            await ctx.send('no race define')
+            return
+        else:
+            participants = race['skipper']
 
-                if race['status'] == True:
-                    user = {}
-                    user['name'] = member.display_name
-                    user['sr'] = sr
-                    user['boat'] = boatid
-                    user['online'] = False
-                    user['mention'] = member.mention
-                    user['member'] = member.id
-                    print(member.id)
-                    #user = discord.utils.get(guild.members, id=123749839583)
-                    #uid = await ctx.guild.fetch_member(member.id)
-                    #print('user{}'.format(uid))
+            if race['status'] == True:
+                user = {}
+                user['name'] = member.display_name
+                user['sr'] = sr
+                user['boat'] = boatid
+                user['online'] = False
+                user['mention'] = member.mention
+                user['member'] = member.id
+                logging.info('register {}'.format(member.id))
+                #user = discord.utils.get(guild.members, id=123749839583)
+                #uid = await ctx.guild.fetch_member(member.id)
+                #print('user{}'.format(uid))
 
-                    #print(user)
-                    participants[ctx.author.display_name] = user
+                #print(user)
+                participants[ctx.author.display_name] = user
 
-                    msg = ''
-                    for u in participants:
+                msg = ''
+                for u in participants:
                         tmpmsg='**{user}** ,{rank} ,{boat}  \n'.format(user=participants[u]['name'],
                             rank=participants[u]['sr'],boat=participants[u]['boat'])
                         #print(msg)
                         msg = msg + tmpmsg
                     
-                    embed = self.buildEmbed(race)
-                    embed.add_field(name="Participants", value=msg, inline=False)
+                embed = self.buildEmbed(race)
+                embed.add_field(name="Participants", value=msg, inline=False)
 
-                    info = race['info']
-                    #info = await ctx.fetch_message(infoid)
-                    await info.edit(embed=embed)
-                    write_data(self.database,self.regatta)
+                info = race['info']
+                #info = await ctx.fetch_message(infoid)
+                await info.edit(embed=embed)
+                write_data(self.database,self.regatta)
 
-                    await ctx.send('👍 ' + user['name'] + ' will register your boat : ' + user['boat'])
-                else:
-                    await ctx.send('🚫 : registration are close for this race')
+                await ctx.send('👍 ' + user['name'] + ' will register your boat : ' + user['boat'])
+            else:
+                await ctx.send('🚫 : registration are close for this race')
          
 
 
@@ -723,10 +737,22 @@ class raceOfficer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx, error):
+        """Handle errors for command."""
+
+        logging.info('error is {}'.format(error))
+
         if isinstance(error, commands.errors.CheckFailure):
             await ctx.send('You do not have the correct role (race officer VRI) for this command.')
+        elif isinstance(error, commands.MissingPermissions):
+            message = "You are missing the required permissions to run this command!"
+        elif isinstance(error, commands.MissingRequiredArgument):
+            message = f"Missing a required argument: {error.param}"
         else:
-            await ctx.send('general error ' + str(error))
+            message = f"General error {error}"
+
+        await ctx.send(message, delete_after=5)
+        await ctx.message.delete(delay=5)
+            #await ctx.send('general error ' + str(error))
 
  
 def setup(bot):

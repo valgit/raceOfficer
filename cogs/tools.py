@@ -16,16 +16,14 @@ def partition (list_in, n):
    #return [list_in[i:i+6] for i in x range(n)]
 
 class tools(commands.Cog):
+	checkrole = 'member'
+
 	def __init__(self, bot):
 		self.bot = bot
-		
-	@commands.command() 
-	async def ping(self, ctx): 
-		'''
-		Pong!
-		'''
-		await ctx.send('Pong!') #Sends a chat message. Remember to await async functions.
-			
+		#fileset = ctx.guild.name + '_settings.json'
+        #guildSet = read_data(fileset)
+
+				
 	#	 print pool of user for apply
 	# need to account for RO/SR
 	#
@@ -73,19 +71,47 @@ class tools(commands.Cog):
 
 	#	 random select boat
 	#
-	@commands.command(name="shuffleboat", help="randomly select boat" )
+	@commands.command(name="shuffleboat", help="randomly select boat" ,aliases=['melange'])
 	async def shuffleboat(self,ctx,num:int):
 		"""display a randomly selected boat liste
-		num : number of boat
+		Parameters
+        ------------        
+		num : str [Required]
+			number of boat to select
 		"""
 		boatlist = ["Formule 18", "Laser", "Star", "49er", "Nacra 17", "J/70", "F50", "Offshore Racer", "AC75"," FareEast28"]
 		
 		if (num>10):
 			await ctx.send('too many boats requiered')
 		else:
-			random_boat = random.choices(boatlist, k=num,False)
+    		#random.shuffle(boatlist)
+    		#result = []
+    		#for i in range(0, len(lst), n):
+        	#	result.append(lst[i:i + n])
+    		#
+			random_boat = random.sample(boatlist, num)
 			await ctx.send('boats are : {}'.format(random_boat))
 			await ctx.send('selection done')
+
+	#
+	# test command and info
+	@commands.command(name="officer", help="server alive and info")
+	async def officer(self,ctx):
+		"""
+		basic info command
+		"""
+		#await ctx.send('pong')
+		await ctx.send('⛵ I am your race officer helper bot ⛵')
+		await ctx.send("discord.py v{}".format(discord.__version__))
+        #TODO : 
+		await ctx.send('version : {}'.format('0.0.1-2-g79020f3-13'))
+		await ctx.send('role particpant will be :' + self.skip_role)
+
+	@commands.command(name="check", help="check string")
+	@commands.has_role(checkrole)
+	async def check(self,ctx):
+		await ctx.send('OK')
+
 
 def setup(bot):
 	bot.add_cog(tools(bot))

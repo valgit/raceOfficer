@@ -23,7 +23,7 @@ client = commands.Bot(command_prefix = prefix)
 
 # 'cogs' is the folder name
 # 'fun', 'mod', and 'misc' are the file names
-cogs = ['cogs.tools','cogs.raceOfficer']
+cogs = ['cogs.tools','cogs.raceOfficer','cogs.settings']
 
 @client.event
 async def on_ready():
