@@ -31,10 +31,10 @@ class tools(commands.Cog):
 	#
 	@commands.command(name="createpool", help="create pool for online users, set num repeat" )
 	#@commands.has_role('race officers')
-	async def division(self,ctx,num:int, *args):
+	async def createpool(self,ctx,num:int, *args):
 		"""display pool division of online people
 		num : number of loop
-		args : race officers, list of participants
+		args : list of participants
 		without a registerd race
 		"""
 

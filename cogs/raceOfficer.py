@@ -667,9 +667,9 @@ class raceOfficer(commands.Cog):
     # print pool of user for apply
     # need to account for RO/SR
     #
-    @commands.command(name="division", help="create pool for online users, set num repeat and Race Officer(s)" )
+    @commands.command(name="setpool", help="create pool for online users, set num repeat and Race Officer(s)" )
     @commands.has_role('race officer VRI')
-    async def division(self,ctx,name: str,num:int, *args):
+    async def setpool(self,ctx,name: str,num:int, *args):
         """display pool division of online people
         num : number of loop
         args : race officer VRI
@@ -702,22 +702,22 @@ class raceOfficer(commands.Cog):
                         description=' players : {}'.format(len(args)), 
                         color = discord.Color.red())
 
-            for x in range(num):
-                part = partition(onlineList,2) # 2 is num of division
-                #logging.info(part)
-                # title='**race {}**'.format(x)
-                for idx, div in enumerate(part):
-                    if not div:
-                        embed.add_field(name='--- **group {} ** ----'.format(idx), 
-                            value ="empty", inline=False)
-                    else:
-                        embed.add_field(name='--- **group {} ** ----'.format(idx) ,
-                            value = ('\n'.join(map(str, div))) , inline=False)
-            else:
-                await mChan.send(embed=embed)
+            #for x in range(num):
+            part = partition(onlineList,num) # 2 is num of division
+            #logging.info(part)
+            # title='**race {}**'.format(x)
+            for idx, div in enumerate(part):
+                if not div:
+                    embed.add_field(name='--- **group {} ** ----'.format(idx), 
+                        value ="empty", inline=False)
+                else:
+                    embed.add_field(name='--- **group {} ** ----'.format(idx) ,
+                        value = ('\n'.join(map(str, div))) , inline=False)
+            #else:
+            await ctx.send(embed=embed)
                 #logging.info(list_of_values)
 
-            await ctx.send('group are set in codes channel')
+            await ctx.send('group are set')
             return
 
 
