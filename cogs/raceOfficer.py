@@ -63,6 +63,8 @@ class raceOfficer(commands.Cog):
     regatta = {}
     database = ''
     skip_role = 'skipper'
+    rOfficer = 'race officer VRI'
+    prefix = 'race-du'
 
     def __init__(self, bot):
         self.bot = bot
@@ -74,6 +76,7 @@ class raceOfficer(commands.Cog):
         # handle role
         self.skip_role = os.getenv('code_role')
         logging.info('will add role : {} to code channel'.format(self.skip_role))
+        logging.info('default prefix : {} '.format(self.prefix))
         return
 
 
@@ -387,7 +390,7 @@ class raceOfficer(commands.Cog):
     # close the resgistration process
     #
     @commands.command(name="close", help="close registration" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def close(self,ctx,name: str):
         """
         close the registration for the race
@@ -421,7 +424,7 @@ class raceOfficer(commands.Cog):
     # open the resgistration process
     #
     @commands.command(name="open", help="(re)open registration" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def open(self,ctx,name: str):
         """
         (re)open the registration for the race
@@ -455,7 +458,7 @@ class raceOfficer(commands.Cog):
     # mention list user which have not send online
     #
     @commands.command(name="notify", help="mention offline users" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def notify(self,ctx, name:str):
         #key = self.makeKey(ctx)
         key = self.getRaceKey(ctx, name)
@@ -542,7 +545,7 @@ class raceOfficer(commands.Cog):
     # display some regatta info
     #
     @commands.command(name="status", help="list esailors online" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def status(self,ctx, name: str):
         """
         list esailor
@@ -592,7 +595,7 @@ class raceOfficer(commands.Cog):
     # print list of sailrank for apply
     #
     @commands.command(name="srlist", help="get sailrank list of esailors online" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def srlist(self,ctx,name: str):
         """display sailrank of online people
         """
@@ -638,7 +641,7 @@ class raceOfficer(commands.Cog):
     #  list sailor for regatta
     #
     @commands.command(name="list", help="list registerd esailors" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def list(self,ctx,name: str):
         """
         list registered esailors
@@ -682,7 +685,7 @@ class raceOfficer(commands.Cog):
     # need to account for RO/SR
     #
     @commands.command(name="setpool", help="create pool for online users, set num repeat and Race Officer(s)" )
-    @commands.has_role('race officer VRI')
+    @commands.has_role(rOfficer)
     async def setpool(self,ctx,name: str,num:int, *args):
         """display pool division of online people
         num : number of loop

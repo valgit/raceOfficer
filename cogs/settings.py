@@ -68,6 +68,7 @@ class settings(commands.Cog):
 
         await ctx.send('participant : "{}" role'.format(guildSet['skipper_name']) )
         await ctx.send('Race Officer : "{}" role'.format(guildSet['ro_name']) )
+        await ctx.send('race prefix is : "{}" '.format(guildSet['prefix']) )
 
 
 def setup(bot):
