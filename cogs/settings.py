@@ -39,9 +39,12 @@ class settings(commands.Cog):
             race officer role
         skipper: str [Required]
             default participant role
+        prefix : str
+            race prefix name (prefix-name)
         """         
         await ctx.send('will set : "{}" for default participant role'.format(skpname) )
         await ctx.send('will set : "{}" for Race Officer role'.format(ro) )
+        #await ctx.send('will use : "{}" for prefix (prefix-xxx) '.format(prefix) )
         fileset = ctx.guild.name + '_settings.json'
         logging.info("setting for guild : {} saved".format(ctx.guild.name))
         guildSet = {}
