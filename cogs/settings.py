@@ -31,7 +31,7 @@ class settings(commands.Cog):
 
     @commands.command(name="config")
     #@commands.has_role('race officer VRI')    
-    async def config(self,ctx,ro: discord.Role, skpname: discord.Role):
+    async def config(self,ctx,ro: discord.Role, skpname: discord.Role, prefix:str = None):
         """definit les roles config
         Parameters
         ------------
@@ -54,6 +54,10 @@ class settings(commands.Cog):
         guildSet['skipper_name'] = skpname.name
         guildSet['skipper_mention'] = skpname.mention
         guildSet['skipper_id'] = skpname.id
+        if prefix:
+            guildSet['prefix'] = prefix + '-' # always add a '-' by def
+        else:
+            guildSet['prefix'] = 'race-du-'
 
         write_data(fileset,guildSet)
         return
@@ -68,7 +72,11 @@ class settings(commands.Cog):
 
         await ctx.send('participant : "{}" role'.format(guildSet['skipper_name']) )
         await ctx.send('Race Officer : "{}" role'.format(guildSet['ro_name']) )
-        await ctx.send('race prefix is : "{}" '.format(guildSet['prefix']) )
+        pfx = guildSet.get('prefix')
+        if pfx:
+            await ctx.send('race prefix is : "{}" '.format(pfx) )
+        else:
+            await ctx.send('no race prefix')
 
 
 def setup(bot):

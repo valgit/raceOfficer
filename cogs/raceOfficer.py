@@ -8,6 +8,7 @@ import json
 import random
 import os
 from string import Template
+from datetime import datetime, timedelta
 
 #tools functions
 def partition (list_in, n):
@@ -64,7 +65,7 @@ class raceOfficer(commands.Cog):
     database = ''
     skip_role = 'skipper'
     rOfficer = 'race officer VRI'
-    prefix = 'race-du'
+    prefix = {}
 
     def __init__(self, bot):
         self.bot = bot
@@ -74,11 +75,29 @@ class raceOfficer(commands.Cog):
         self.database = read_data(self.database)
         print(self.regatta)
         # handle role
+        self.prefix['default'] = 'race-du'
         self.skip_role = os.getenv('code_role')
         logging.info('will add role : {} to code channel'.format(self.skip_role))
-        logging.info('default prefix : {} '.format(self.prefix))
+        logging.info('default prefix : {} '.format(self.prefix['default']))
         return
 
+
+    def getPrefix(self,ctx):
+        """
+        get prefix for race of guild
+        """
+        if self.prefix[ctx.guild.name]:
+            return self.prefix[ctx.guild.name]
+        else:
+            #TODO: load json
+            fileset = ctx.guild.name + '_settings.json'
+            guildSet = read_data(fileset)
+            pfx = guildSet.get('prefix')
+            if pfx:
+                self.prefix[ctx.guild.name] = pfx
+            else:
+                self.prefix[ctx.guild.name] = self.prefix['default']
+            return self.prefix[ctx.guild.name]
 
     def findChannel(self,ctx,name):
         """ find a channel by name
@@ -103,7 +122,7 @@ class raceOfficer(commands.Cog):
         # apply template ?
         temp = Template(contents)
         return temp.substitute(racename=race['name'],
-            date=race['date'],time=race['time'],
+            date=race['date'],time=race['time'],ontime=race['onTime'],
             code="codes-" + race['name'])
         #return contents
 
@@ -165,6 +184,12 @@ class raceOfficer(commands.Cog):
             race['channel']= ctx.channel
             #race['channel'] = mChan
             #race['code'] = channel
+            #get online time
+            format = '%H:%M'
+            #time = datetime.strptime(s2, format) - datetime.strptime(s1, format)
+            onTime = datetime.strptime(time, format) - timedelta(hours=0, minutes=30)
+            #logging.info('online will be @ {}'.format(onTime.strftime(format)))
+            race['onTime'] = onTime.strftime(format)
             race['status'] = True  # we accept registration
             race['skipper'] = dict()
             self.regatta[key]=race
@@ -640,7 +665,7 @@ class raceOfficer(commands.Cog):
     #
     #  list sailor for regatta
     #
-    @commands.command(name="list", help="list registerd esailors" )
+    @commands.command(name="list")
     @commands.has_role(rOfficer)
     async def list(self,ctx,name: str):
         """
@@ -684,12 +709,18 @@ class raceOfficer(commands.Cog):
     # print pool of user for apply
     # need to account for RO/SR
     #
-    @commands.command(name="setpool", help="create pool for online users, set num repeat and Race Officer(s)" )
+    @commands.command(name="setgroup" , aliases = ['setpool','pool','groupe'])
     @commands.has_role(rOfficer)
     async def setpool(self,ctx,name: str,num:int, *args):
-        """display pool division of online people
-        num : number of loop
-        args : race officer VRI
+        """create group for online users, set num repeat and Race Officer(s)
+        Parameters
+        ------------
+        name: str [Required]
+            regatta name
+        num : int [Required]
+            number of group
+        args : str
+            list of race officer VRI
         """
         #key = ctx.guild.name + "-" + name
         key = self.getRaceKey(ctx, name)
