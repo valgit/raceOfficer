@@ -1,13 +1,14 @@
-import sys
-
-# adding Folder_2 to the system path
-#sys.path.insert(0, '/Users/val/Documents/sailing/raceOfficer2/pycord')
-
 import os
 import discord
 from dotenv import load_dotenv
 from discord.ext import commands
 import logging
+#import sys
+
+# adding Folder_2 to the system path
+#sys.path.insert(0, '/Users/val/Documents/sailing/raceOfficer2/pycord')
+
+
 
 # prodbot : https://discord.com/api/oauth2/authorize?client_id=919955519949668373&permissions=337960446032&scope=bot
 # devbot url : https://discord.com/api/oauth2/authorize?client_id=922889780180688927&permissions=406679956560&scope=bot

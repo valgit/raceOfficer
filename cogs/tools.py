@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 import io
@@ -104,8 +105,9 @@ class tools(commands.Cog):
 		await ctx.send('⛵ I am your race officer helper bot ⛵')
 		await ctx.send("discord.py v{}".format(discord.__version__))
         #TODO : 
-		await ctx.send('version : {}'.format('0.0.1-2-g79020f3-13'))
-		await ctx.send('role particpant will be :' + self.skip_role)
+		version=os.getenv('version')
+		await ctx.send('version : {}'.format(version))
+		#TODO ? await ctx.send('role particpant will be :' + self.skip_role)
 
 	@commands.command(name="check", help="check string")
 	@commands.has_role(checkrole)
