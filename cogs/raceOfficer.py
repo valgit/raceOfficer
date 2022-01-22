@@ -19,8 +19,15 @@ def partition (list_in, n):
     return [list_in[x::n] for x in range(n)]
     #return [list_in[i:i+6] for i in x range(n)]
 
+#
+# build a particpant list, return SR numbers
+#
 def buildList (participants):
     """extract online into a list
+    Parameters
+    ------------
+    participants: str [Required]
+        hash of users
     """
     list_of_values = ['']
     j = 0
@@ -663,15 +670,18 @@ class raceOfficer(commands.Cog):
     
     
     #
-    #  list sailor for regatta
+    # list sailor for regatta
+    # in ro channel
     #
     @commands.command(name="list")
     @commands.has_role(rOfficer)
     async def list(self,ctx,name: str):
         """
         list registered esailors
-        name: race name
-        in ro channel
+        Parameters
+        ------------
+        name: str [Required]
+            race name
         """
         #key=ctx.guild.name+"_"+name
         key = self.getRaceKey(ctx, name)
