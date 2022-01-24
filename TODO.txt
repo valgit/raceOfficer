@@ -4,8 +4,9 @@ TODO:
 * role # par race ?
 * sauvegarde/restauration
 * id membre plutot que pseudo ?
+  point en discussion/suspend
 * creation des salons, gestion des roles et permission
-* work on the IC publication
+* (+/- done) work on the IC publication
 * download list ?
 
 ---------------------
