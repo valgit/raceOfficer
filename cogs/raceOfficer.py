@@ -19,25 +19,7 @@ def partition (list_in, n):
     return [list_in[x::n] for x in range(n)]
     #return [list_in[i:i+6] for i in x range(n)]
 
-#
-# build a particpant list, return SR numbers
-#
-def buildList (participants):
-    """extract online into a list
-    Parameters
-    ------------
-    participants: str [Required]
-        hash of users
-    """
-    list_of_values = ['']
-    j = 0
-    for u in participants:
-            if participants[u]['online'] == True:
-                if j==0:
-                    list_of_values[0]=participants[u]['name']
-                else:
-                    list_of_values.append(participants[u]['name'])
-                j+=1
+
     return list_of_values
 
 #participants = {}
@@ -88,6 +70,27 @@ class raceOfficer(commands.Cog):
         logging.info('default prefix : {} '.format(self.prefix['default']))
         return
 
+
+    #
+    # build a particpant list, return SR numbers
+    #
+    def buildList (self,participants):
+        """extract online into a list
+        Parameters
+        ------------
+        participants: str [Required]
+            hash of users
+        """
+        list_of_values = ['']
+        j = 0
+        for u in participants:
+                if participants[u]['online'] == True:
+                    if j==0:
+                        list_of_values[0]=participants[u]['sr']
+                    else:
+                        list_of_values.append(participants[u]['sr'])
+                    j+=1
+        
 
     def getPrefix(self,ctx):
         """
@@ -730,7 +733,7 @@ class raceOfficer(commands.Cog):
         num : int [Required]
             number of group
         args : str
-            list of race officer VRI
+            list of SR race officer VRI
         """
         #key = ctx.guild.name + "-" + name
         key = self.getRaceKey(ctx, name)
@@ -751,9 +754,11 @@ class raceOfficer(commands.Cog):
             if len(args) > 0 :
                 await ctx.send('{} Race officer VRI : {}'.format(len(args), ', '.join(args)))
 
-            onlineList = buildList(participants)
+            onlineList = self.buildList(participants)
             #should remove them from list
             for ro in args:
+                # get SR of RO
+                # remove SR
                 onlineList.remove(ro)
 
             embed = discord.Embed(title='** pool assignement **', 
