@@ -1,3 +1,4 @@
+#from types import NoneType
 import discord
 from discord import embeds
 from discord.ext import commands
@@ -551,7 +552,7 @@ class raceOfficer(commands.Cog):
                     #if role in member.roles:
                     await member.remove_roles(role)
                 except Exception as e:
-                    await ctx.send('There was an error running this command ' + str(e)) #if error 
+                    await ctx.send('remove role : There was an error running this command ' + str(e)) #if error 
             else:
                 participants.clear()
                 #await ctx.send("all participants are removed, regatta " + name + " remove")
@@ -747,13 +748,16 @@ class raceOfficer(commands.Cog):
         
             mChan = self.findChannel(ctx,'codes')
 
-            # args are RO/SR
-            if len(args) < 4 :
-                await ctx.send("**WARNING** not enough Race Officer(s) defined !")
+            if args is None:
+                await ctx.send("**WARNING** no Race Officer(s) defined !")
+            else:                
+                # args are RO/SR
+                if len(args) < 4 :
+                    await ctx.send("**WARNING** not enough Race Officer(s) defined !")
             
-            if len(args) > 0 :
-                await ctx.send('{} Race officer VRI : {}'.format(len(args), ', '.join(args)))
-
+                if len(args) > 0 :
+                    await ctx.send('{} Race officer VRI : {}'.format(len(args), ', '.join(args)))            
+            
             onlineList = self.buildList(participants)
             #should remove them from list
             for ro in args:
@@ -776,7 +780,7 @@ class raceOfficer(commands.Cog):
                 else:
                     embed.add_field(name='--- **group {} ** ----'.format(idx) ,
                         value = ('\n'.join(map(str, div))) , inline=False)
-            #else:
+            #else:            
             await ctx.send(embed=embed)
                 #logging.info(list_of_values)
 
@@ -799,8 +803,10 @@ class raceOfficer(commands.Cog):
         else:
             message = f"General error {error}"
 
-        await ctx.send(message, delete_after=5)
-        await ctx.message.delete(delay=5)
+        #TODO:
+        #await ctx.send(message, delete_after=5)
+        await ctx.send(message)
+        #await ctx.message.delete(delay=5)
             #await ctx.send('general error ' + str(error))
 
  
